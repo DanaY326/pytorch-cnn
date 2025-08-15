@@ -1,1 +1,3 @@
-pytorch-digit-classification/Lib/*
+/venv/*
+/results
+/results/*
