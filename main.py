@@ -8,6 +8,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 n_epochs = 3
+n_continued_epochs = 6
 batch_size_train = 64
 batch_size_test = 1000
 learning_rate = 0.01
@@ -125,6 +126,42 @@ for epoch in range(1, n_epochs + 1):
     train(epoch)
     test()
 
+fig = plt.figure()
+plt.plot(train_counter, train_losses, color='blue')
+plt.scatter(test_counter, test_losses, color='red')
+plt.legend(['Train Loss', 'Test Loss'], loc='upper right')
+plt.xlabel('number of training examples seen')
+plt.ylabel('negative log likelihood loss')
+fig
+
+with torch.no_grad():
+    output = network(example_data)
+
+fig = plt.figure()
+for i in range(6):
+    plt.subplot(2, 3, i + 1)
+    plt.tight_layout()
+    plt.imshow(example_data[i][0], cmap='gray', interpolation='none')
+    plt.title("Prediction: {}".format(
+        output.data.max(1, keepdim=True)[1][i].item()
+    ))
+    plt.xticks([])
+    plt.yticks([])
+fig
+
+continued_network = Net()
+continued_optimizer = optim.SGD(network.parameters(), lr=learning_rate, momentum=momentum)
+
+network_state_dict = torch.load('results/model.pth')
+continued_network.load_state_dict(network_state_dict)
+
+optimizer_state_dict = torch.load('results/optimizer.pth')
+continued_optimizer.load_state_dict(optimizer_state_dict)
+
+for i in range(n_epochs + 1, n_epochs + n_continued_epochs + 1):
+    test_counter.append(i * len(train_loader.dataset))
+    train(i)
+    test()
 
 fig = plt.figure()
 plt.plot(train_counter, train_losses, color='blue')
