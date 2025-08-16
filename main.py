@@ -20,7 +20,7 @@ torch.manual_seed(random_seed)
 
 
 train_loader = torch.utils.data.DataLoader(
-    torchvision.datasets.MNIST('/files/', train=True, download=True,
+    torchvision.datasets.MNIST('files/', train=True, download=True,
                                transform=torchvision.transforms.Compose([
                                    torchvision.transforms.ToTensor(),
                                    torchvision.transforms.Normalize(
@@ -31,7 +31,7 @@ train_loader = torch.utils.data.DataLoader(
 )
 
 test_loader = torch.utils.data.DataLoader(
-    torchvision.datasets.MNIST('/files/', train=False, download=True,
+    torchvision.datasets.MNIST('files/', train=False, download=True,
                                transform=torchvision.transforms.Compose([
                                    torchvision.transforms.ToTensor(),
                                    torchvision.transforms.Normalize(
@@ -100,8 +100,8 @@ def train(epoch):
             train_counter.append(
                 (batch_idx * batch_size_train) + ((epoch - 1) * len(train_loader.dataset))
             )
-            torch.save(network.state_dict(), '/results/model.pth')
-            torch.save(optimizer.state_dict(), '/results/optimizer.pth')
+            torch.save(network.state_dict(), 'results/model.pth')
+            torch.save(optimizer.state_dict(), 'results/optimizer.pth')
 
 def test():
     network.eval()
